@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
@@ -22,6 +21,7 @@ async function run() {
         await client.connect();
         const database = client.db("solo_tour");
         const placeCollection = database.collection("places");
+        const orderCollection = database.collection("orders");
 
         // POST API to add places
         app.post('/places', async (req, res) => {
@@ -36,6 +36,49 @@ async function run() {
             const result = await cursor.toArray()
             res.json(result)
         })
+
+        // get place by id
+        app.get('/places/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await placeCollection.findOne(query)
+            res.json(result)
+        })
+
+        // add post api to add orders
+        app.post('/orders', async (req, res) => {
+            const orders = req.body
+            const result = await orderCollection.insertOne(orders)
+            res.json(result)
+        })
+
+        // get all orders
+        app.get('/orders', async (req, res) => {
+            const cursor = orderCollection.find({})
+            const result = await cursor.toArray()
+            console.log('orders found', result)
+            res.json(result)
+        })
+
+        // get orders id
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.findOne(query)
+            console.log('found single order', result)
+            res.json(result)
+
+        })
+
+        // delete order by id
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(query)
+            res.json(result)
+
+        })
+
 
     } finally {
         //   await client.close();
