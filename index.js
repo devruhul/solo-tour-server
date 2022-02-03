@@ -31,11 +31,7 @@ async function run() {
         })
 
         // GET API to find all places
-        app.get('/places', async (req, res) => {
-            const cursor = placeCollection.find({})
-            const result = await cursor.toArray()
-            res.json(result)
-        })
+      
 
     } finally {
         //   await client.close();
