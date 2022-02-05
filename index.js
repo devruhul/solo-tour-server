@@ -5,7 +5,7 @@ const ObjectId = require("mongodb").ObjectId;
 require("dotenv").config();
 
 const app = express()
-const port = 5000
+const port = process.env.PORT || 5000
 
 // middlewars
 app.use(cors())
@@ -82,12 +82,12 @@ async function run() {
             const result = await contactCollection.insertOne(contact)
             res.json(result)
         })
+
     } finally {
         //   await client.close();
     }
 }
 run().catch(console.dir);
-
 
 app.get('/', (req, res) => {
     res.send('running solo tour server')
