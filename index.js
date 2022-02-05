@@ -22,6 +22,7 @@ async function run() {
         const database = client.db("solo_tour");
         const placeCollection = database.collection("places");
         const orderCollection = database.collection("orders");
+        const contactCollection = database.collection("contact");
 
         // POST API to add places
         app.post('/places', async (req, res) => {
@@ -56,7 +57,6 @@ async function run() {
         app.get('/orders', async (req, res) => {
             const cursor = orderCollection.find({})
             const result = await cursor.toArray()
-            console.log('orders found', result)
             res.json(result)
         })
 
@@ -65,9 +65,7 @@ async function run() {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const result = await orderCollection.findOne(query)
-            console.log('found single order', result)
             res.json(result)
-
         })
 
         // delete order by id
@@ -76,16 +74,19 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const result = await orderCollection.deleteOne(query)
             res.json(result)
-
         })
 
-
+        // POST APi to insert message
+        app.post('/contact', async (req, res) => {
+            const contact = req.body
+            const result = await contactCollection.insertOne(contact)
+            res.json(result)
+        })
     } finally {
         //   await client.close();
     }
 }
 run().catch(console.dir);
-
 
 
 app.get('/', (req, res) => {
